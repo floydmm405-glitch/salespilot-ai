@@ -1,0 +1,5 @@
+"use client";
+import {useEffect,useState} from "react";
+import {useLanguage} from "./language";
+const labels:Record<string,string[]>={en:["Theme","System","Light","Dark"],zh:["主题","系统","浅色","深色"],es:["Tema","Sistema","Claro","Oscuro"],ar:["المظهر","النظام","فاتح","داكن"],fr:["Thème","Système","Clair","Sombre"],pt:["Tema","Sistema","Claro","Escuro"]};
+export default function ThemePicker(){const {lang}=useLanguage();const [mode,setMode]=useState("system");useEffect(()=>{const v=localStorage.getItem("salespilot-theme");if(v==="light"||v==="dark")setMode(v);},[]);useEffect(()=>{const media=matchMedia("(prefers-color-scheme: dark)");const apply=()=>{document.documentElement.dataset.theme=mode==="system"?(media.matches?"dark":"light"):mode;};apply();media.addEventListener("change",apply);return()=>media.removeEventListener("change",apply);},[mode]);const l=labels[lang]||labels.en;return <select aria-label={l[0]} data-testid="theme-picker" value={mode} onChange={e=>{setMode(e.target.value);localStorage.setItem("salespilot-theme",e.target.value);}}>{["system","light","dark"].map((v,i)=><option key={v} value={v}>{l[i+1]}</option>)}</select>;}
