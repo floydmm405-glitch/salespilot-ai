@@ -1,9 +1,9 @@
-import Link from "next/link";
+import Marketing from "./marketing";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 export default async function Home(){
  const supabase=await createClient();
  const {data:{user}}=await supabase.auth.getUser();
  if(user)redirect("/dashboard");
- return <main className="marketing"><nav className="marketing-nav"><div className="brand"><div className="brand-mark">S</div>SalesPilot AI</div><Link className="secondary-link" href="/login">Sign in</Link></nav><section className="marketing-hero"><div className="eyebrow">AI-POWERED SALES WORKSPACE</div><h1>Turn more enquiries into opportunities.</h1><p>Organise leads, prioritise your next move and draft thoughtful replies with AI. Built for freelancers and service businesses.</p><div className="auth-actions"><Link className="primary-link" href="/signup">Get started free</Link><a className="secondary-link" href="#pricing">Explore plans</a></div></section><section className="marketing-grid">{[["01","Capture leads","Keep contact details and deal stages in one workspace."],["02","Prioritise with AI","Review suggested priorities, next steps and draft replies."],["03","Track progress","See your pipeline and closed-deal win rate."]].map(([n,t,d])=><article className="panel" key={n}><small>{n}</small><h2>{t}</h2><p>{d}</p></article>)}</section><section id="pricing"><h2>Simple pricing</h2><div className="marketing-grid pricing-grid"><article className="panel"><h3>Free</h3><h2>€0 / month</h2><p>Lead management, pipeline, AI history and 10 AI attempts per day.</p><Link className="primary-link" href="/signup">Start free</Link></article><article className="panel"><small>PLANNED · NOT AVAILABLE YET</small><h3>Pro</h3><h2>€19 / month</h2><p>Planned higher AI limits and advanced sales tools. Pricing subject to change.</p></article></div></section><footer>SalesPilot AI · Review AI suggestions before sending.</footer></main>;
+ return <Marketing/>;
 }
