@@ -19,3 +19,5 @@
 .preferences{max-width:1120px;margin:auto;padding:12px 20px 0;display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;align-items:center}
 .preferences select{width:auto;max-width:100%}
 .preferences>div{padding:0!important;margin:0!important}
+
+:root[data-theme=dark] a.primary-link{color:#fff;background:#245bc7}.pricing-grid .annual-plan{border:2px solid #4782ed}.annual-plan strong{display:inline-block;padding:6px 10px;border-radius:8px;background:var(--track);color:inherit}
