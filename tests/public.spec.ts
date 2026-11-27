@@ -13,3 +13,5 @@ test('registration and login forms, protected dashboard and API',async({page,req
  await page.goto('/dashboard');await expect(page).toHaveURL(/\/login/);
  expect((await request.post('/api/analyze',{data:{id:'test'}})).status()).toBe(401);
 });
+
+test('theme selection persists and follows system',async({page})=>{await page.emulateMedia({colorScheme:'dark'});await page.goto('/');const picker=page.getByTestId('theme-picker');await expect(picker).toHaveValue('system');await expect(page.locator('html')).toHaveAttribute('data-theme','dark');await picker.selectOption('light');await expect(page.locator('html')).toHaveAttribute('data-theme','light');await page.reload();await expect(picker).toHaveValue('light');await expect(page.locator('html')).toHaveAttribute('data-theme','light');await picker.selectOption('dark');await expect(page.locator('body')).toHaveCSS('background-color','rgb(14, 22, 37)');await page.reload();await expect(picker).toHaveValue('dark');await picker.selectOption('system');await page.emulateMedia({colorScheme:'light'});await expect(page.locator('html')).toHaveAttribute('data-theme','light');});
