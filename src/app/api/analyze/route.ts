@@ -1,3 +1,4 @@
+import {trialActive} from "@/lib/trial";
 import {createClient} from "@/lib/supabase/server";
 export async function POST(req:Request){
  const s=await createClient(); const {data:{user}}=await s.auth.getUser();
@@ -10,6 +11,7 @@ export async function POST(req:Request){
  const summary=typeof body.summary==="string"?body.summary.trim():"";
  if(!summary||summary.length>1200||body.confirmed!==true)return Response.json({error:"Provide a reviewed, non-personal summary (1–1200 characters)."},{status:400});
  if(/@|https?:\/\/|\b(?:\+?\d[\s().-]*){7,}/i.test(summary))return Response.json({error:"Remove contact details and links before analysis."},{status:400});
+ if(!trialActive(user.created_at))return Response.json({error:"Trial expired. Paid plans are not available yet.",code:"TRIAL_EXPIRED"},{status:403});
  const key=process.env.GROQ_API_KEY?.trim();
  if(!key)return Response.json({error:"AI not configured"},{status:503});
  const day=new Date().toISOString().slice(0,10);
