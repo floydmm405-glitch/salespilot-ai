@@ -1,0 +1,8 @@
+"use client";
+import {useState} from "react";
+import Link from "next/link";
+import {createClient} from "@/lib/supabase/client";
+export default function AuthForm({signup}:{signup:boolean}){
+const [message,setMessage]=useState("");const [busy,setBusy]=useState(false);
+return <main className="auth-shell"><form className="auth-card" onSubmit={async e=>{e.preventDefault();setBusy(true);setMessage("");const f=new FormData(e.currentTarget);try{const s=createClient();const email=String(f.get("email"));const password=String(f.get("password"));const result=signup?await s.auth.signUp({email,password,options:{data:{company_name:String(f.get("company"))},emailRedirectTo:location.origin+"/auth/callback"}}):await s.auth.signInWithPassword({email,password});if(result.error)throw result.error;if(result.data.session)location.assign("/dashboard");else setMessage("Check your email to confirm your account.");}catch(err){setMessage(err instanceof Error?err.message:"Unable to continue.");}finally{setBusy(false);}}}><Link href="/">SalesPilot AI</Link><h1>{signup?"Create your workspace":"Welcome back"}</h1>{signup&&<label>Company name<input name="company" required maxLength={120}/></label>}<label>Email<input name="email" type="email" required autoComplete="email"/></label><label>Password<input name="password" type="password" required minLength={8} autoComplete={signup?"new-password":"current-password"}/></label><button disabled={busy}>{busy?"Please wait…":signup?"Create account":"Sign in"}</button><p role="status">{message}</p><Link href={signup?"/login":"/signup"}>{signup?"Already have an account? Sign in":"Create an account"}</Link></form></main>;
+}
