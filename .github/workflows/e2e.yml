@@ -1,0 +1,44 @@
+name: Browser E2E
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      account_tests:
+        type: boolean
+        default: false
+      ai_tests:
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  public:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - run: npx playwright install --with-deps chromium webkit
+      - run: npx playwright test tests/public.spec.ts
+  accounts:
+    if: github.event_name == 'workflow_dispatch' && inputs.account_tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      E2E_EMAIL_A: ${{ secrets.E2E_EMAIL_A }}
+      E2E_PASSWORD_A: ${{ secrets.E2E_PASSWORD_A }}
+      E2E_EMAIL_B: ${{ secrets.E2E_EMAIL_B }}
+      E2E_PASSWORD_B: ${{ secrets.E2E_PASSWORD_B }}
+      E2E_RUN_AI: ${{ inputs.ai_tests }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test tests/account.spec.ts --project=desktop
